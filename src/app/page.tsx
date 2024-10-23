@@ -3,12 +3,24 @@ import Link from "next/link";
 import { LatestPost } from "@/app/_components/post";
 import { getServerAuthSession } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
+import { Button } from "@/components/ui/button";
 
 export default async function Home() {
   const hello = await api.post.hello({ text: "from tRPC" });
   const session = await getServerAuthSession();
 
   void api.post.getLatest.prefetch();
+
+  if (!session || !session.user) {
+    return (
+      <div className="mx-auto mt-24 flex h-full w-1/3 flex-col justify-center self-center">
+        <h1 className="mb-24 text-center text-6xl">Bitte erst anmelden!</h1>
+        <Button asChild>
+          <Link href="/api/auth/signin">Anmelden</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <HydrateClient>
