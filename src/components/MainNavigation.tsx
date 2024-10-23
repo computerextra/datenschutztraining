@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import Link from "next/link";
 
@@ -13,6 +11,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { getServerAuthSession } from "@/server/auth";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -52,7 +51,19 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ];
 
-export function MainNavigation() {
+export async function MainNavigation() {
+  const session = await getServerAuthSession();
+
+  if (!session || !session.user) {
+    return (
+      <div className="ms-2 mt-2 flex gap-8 underline">
+        <Link href="/Datenschutz">Datenschutz</Link>
+        <Link href="/Impressum">Impressum</Link>
+        <Link href="/api/auth/signin">Anmelden</Link>
+      </div>
+    );
+  }
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
