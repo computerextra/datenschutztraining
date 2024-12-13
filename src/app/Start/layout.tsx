@@ -3,6 +3,9 @@ import "@/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
+import { TRPCReactProvider } from "@/trpc/react";
+import NavigationMenu from "./_components/NavigationMenu";
+
 export const metadata: Metadata = {
   title: "TRISTAN",
   description: "Ein Datenschutz Training",
@@ -14,7 +17,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="de" className={`${GeistSans.variable}`}>
-      <body>{children}</body>
+      <body>
+        <TRPCReactProvider>
+          <NavigationMenu />
+          {children}
+        </TRPCReactProvider>
+      </body>
     </html>
   );
 }
