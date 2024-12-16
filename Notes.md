@@ -40,5 +40,14 @@
 ## Wie setzen wir das um?
 
 - [ ] Nextjs mit T3 App? (Prisma / Tailwind / Next Auth)
+- [ ] NextAuth für Authentifizierung?
+- [ ] Datei Upload?
+  - [ ] Direkt mit Next?
+    - [ ] Wie erhöht man Datei Limit? Standard ist 2MB?
+- [ ] Medienwiedergabe?
+- [ ] PDF Erstellung
+- [ ] Text schreiben? Mit Markdown?
 
 ## Auf was müssen wir dabei achten?
+
+- [ ] Könnte schnell langsam werden, wenn Prisma genutzt wird...

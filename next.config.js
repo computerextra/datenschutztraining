@@ -5,6 +5,12 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "100mb", // File Upload Limit 100mb per File
+    },
+  },
+};
 
 export default config;
