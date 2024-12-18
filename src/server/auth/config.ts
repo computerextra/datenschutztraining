@@ -4,6 +4,8 @@ import Nodemailer from "next-auth/providers/nodemailer";
 import { db } from "@/server/db";
 import { env } from "@/env";
 
+const allowedDomains = ["computer-extra.de", "aem-gruppe.de"];
+
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -43,6 +45,24 @@ export const authConfig = {
         },
       },
       from: env.EMAIL_FROM,
+      normalizeIdentifier(identifier: string): string {
+        // Get the first two elements only,
+        // separated by `@` from user input.
+        // eslint-disable-next-line prefer-const
+        let [local, domain] = identifier.toLowerCase().trim().split("@");
+        if (identifier.split("@").length > 2) {
+          throw new Error("Only one email allowed");
+        }
+        // The part before "@" can contain a ","
+        // but we remove it on the domain part
+        if (domain == null) throw new Error("No Domain");
+        domain = domain.split(",")[0];
+        if (domain == null) throw new Error("No Domain");
+        if (!allowedDomains.includes(domain))
+          throw new Error("Domain not allowed");
+
+        return `${local}@${domain}`;
+      },
     }),
     /**
      * ...add more providers here.

@@ -108,20 +108,23 @@ export default async function NavigationMenu() {
           )}
           <MenubarMenu>
             <MenubarTrigger asChild>
-              <Link href="/">Impressum</Link>
+              <Link href="/Impressum">Impressum</Link>
             </MenubarTrigger>
           </MenubarMenu>
           <MenubarMenu>
             <MenubarTrigger asChild>
-              <Link href="/">Datenschutz</Link>
+              <Link href="/Datenschutz">Datenschutz</Link>
             </MenubarTrigger>
           </MenubarMenu>
           {session?.user.admin && (
             <>
               <MenubarMenu>
-                <MenubarTrigger asChild>
-                  <Link href="/">ADMIN</Link>
-                </MenubarTrigger>
+                <MenubarTrigger>ADMIN</MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem inset asChild>
+                    <Link href="/">Benutzer</Link>
+                  </MenubarItem>
+                </MenubarContent>
               </MenubarMenu>
             </>
           )}
@@ -136,7 +139,9 @@ export default async function NavigationMenu() {
                   {session.user.name ?? session.user.email}
                 </MenubarTrigger>
                 <MenubarContent>
-                  <MenubarItem inset>Profil</MenubarItem>
+                  <MenubarItem inset asChild>
+                    <Link href="/Profil">Profil</Link>
+                  </MenubarItem>
                   <MenubarSeparator />
                   <MenubarItem inset asChild>
                     <Link href="/api/auth/signout">Abmelden</Link>
