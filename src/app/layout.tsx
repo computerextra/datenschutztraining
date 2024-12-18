@@ -33,7 +33,7 @@ export default function RootLayout({
           >
             <AcceptTestPage />
             <NavigationMenu />
-            <div className="container mx-auto mt-12">{children}</div>
+            <div className="container mx-auto mb-8 mt-12">{children}</div>
           </ThemeProvider>
         </TRPCReactProvider>
       </body>
