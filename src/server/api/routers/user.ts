@@ -13,6 +13,16 @@ export const userRouter = createTRPCRouter({
     });
     return res;
   }),
+  getAdmin: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      if (!ctx.session.user.admin) return null;
+
+      const res = await ctx.db.user.findUnique({
+        where: { id: input.id },
+      });
+      return res;
+    }),
   getAll: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.session.user.admin) return null;
 

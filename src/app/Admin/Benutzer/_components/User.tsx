@@ -6,7 +6,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -32,6 +31,7 @@ import {
   getFilteredRowModel,
 } from "@tanstack/react-table";
 import { ArrowUpDown, Check, Cross, MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 const columns: ColumnDef<User>[] = [
@@ -82,14 +82,9 @@ const columns: ColumnDef<User>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             {/* TODO: Action Links erstellen und einfügen */}
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(x.id)}
-            >
-              Copy payment ID
+            <DropdownMenuItem asChild>
+              <Link href={`/Admin/Benutzer/${x.id}`}>Bearbeiten</Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
