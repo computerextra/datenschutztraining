@@ -32,29 +32,9 @@ export default async function NavigationMenu() {
           {session?.user && (
             <>
               <MenubarMenu>
-                <MenubarTrigger>File</MenubarTrigger>
-                <MenubarContent>
-                  <MenubarItem>
-                    New Tab <MenubarShortcut>⌘T</MenubarShortcut>
-                  </MenubarItem>
-                  <MenubarItem>
-                    New Window <MenubarShortcut>⌘N</MenubarShortcut>
-                  </MenubarItem>
-                  <MenubarItem disabled>New Incognito Window</MenubarItem>
-                  <MenubarSeparator />
-                  <MenubarSub>
-                    <MenubarSubTrigger>Share</MenubarSubTrigger>
-                    <MenubarSubContent>
-                      <MenubarItem>Email link</MenubarItem>
-                      <MenubarItem>Messages</MenubarItem>
-                      <MenubarItem>Notes</MenubarItem>
-                    </MenubarSubContent>
-                  </MenubarSub>
-                  <MenubarSeparator />
-                  <MenubarItem>
-                    Print... <MenubarShortcut>⌘P</MenubarShortcut>
-                  </MenubarItem>
-                </MenubarContent>
+                <MenubarTrigger asChild>
+                  <Link href="/Info">Informationen</Link>
+                </MenubarTrigger>
               </MenubarMenu>
               <MenubarMenu>
                 <MenubarTrigger>Edit</MenubarTrigger>
@@ -123,6 +103,9 @@ export default async function NavigationMenu() {
                 <MenubarContent>
                   <MenubarItem inset asChild>
                     <Link href="/Admin/Benutzer">Benutzer</Link>
+                  </MenubarItem>
+                  <MenubarItem inset asChild>
+                    <Link href="/Admin/Info">Informationen</Link>
                   </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>

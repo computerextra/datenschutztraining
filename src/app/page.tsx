@@ -33,10 +33,6 @@ export default async function Home() {
           {session.user.name && session.user.name.length > 2 ? (
             <>
               <h2>Hallo {session.user.name}</h2>
-              <div className="mx-auto mt-2 max-w-[40%] text-start">
-                <h4>Übersicht</h4>
-                {/* TODO: Benuzter Übersicht erstellen */}
-              </div>
             </>
           ) : (
             <h3>
