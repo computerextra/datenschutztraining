@@ -17,7 +17,7 @@ export const userRouter = createTRPCRouter({
     if (!ctx.session.user.admin) return null;
 
     const res = await ctx.db.user.findMany();
-    return { res };
+    return res;
   }),
   update: protectedProcedure
     .input(z.object({ name: z.string() }))

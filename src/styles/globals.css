@@ -105,5 +105,5 @@ small {
 }
 
 ::selection {
-  @apply bg-foreground text-primary;
+  @apply bg-primary text-background;
 }

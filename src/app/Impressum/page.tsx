@@ -1,7 +1,6 @@
 "use client";
 
 export default function Impressum() {
-  // TODO: Text generieren und einsetzen
   return (
     <>
       <h1>Impressum</h1>
@@ -38,7 +37,7 @@ export default function Impressum() {
         <a
           href="https://ec.europa.eu/consumers/odr/"
           target="_blank"
-          className="text-blue-500 underline"
+          className="text-primary underline"
           rel="noopener noreferrer"
         >
           https://ec.europa.eu/consumers/odr/
@@ -72,7 +71,7 @@ export default function Impressum() {
         Quelle:{" "}
         <a
           href="https://www.e-recht24.de/"
-          className="text-blue-500 underline"
+          className="text-primary underline"
           target="_blank"
           rel="noopener noreferrer"
         >

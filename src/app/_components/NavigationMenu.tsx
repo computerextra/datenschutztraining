@@ -122,18 +122,14 @@ export default async function NavigationMenu() {
                 <MenubarTrigger>ADMIN</MenubarTrigger>
                 <MenubarContent>
                   <MenubarItem inset asChild>
-                    <Link href="/">Benutzer</Link>
+                    <Link href="/Admin/Benutzer">Benutzer</Link>
                   </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>
             </>
           )}
           <MenubarMenu>
-            {!session ? (
-              <MenubarTrigger asChild>
-                <Link href="/api/auth/signin">Anmelden</Link>
-              </MenubarTrigger>
-            ) : (
+            {session && (
               <>
                 <MenubarTrigger>
                   {session.user.name ?? session.user.email}
