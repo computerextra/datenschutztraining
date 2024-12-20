@@ -107,6 +107,9 @@ export default async function NavigationMenu() {
                   <MenubarItem inset asChild>
                     <Link href="/Admin/Info">Informationen</Link>
                   </MenubarItem>
+                  <MenubarItem inset asChild>
+                    <Link href="/Admin/Medien">Medien</Link>
+                  </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>
             </>

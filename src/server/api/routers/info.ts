@@ -15,7 +15,7 @@ export const infoRouter = createTRPCRouter({
       orderBy: {
         created_at: "desc",
       },
-      take: 8,
+      take: 4,
     });
   }),
   get: protectedProcedure

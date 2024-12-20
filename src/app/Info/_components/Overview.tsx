@@ -13,6 +13,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { InfoDataTable } from "@/app/_components/InfoDataTable";
+import { calcReadtime } from "@/Helper/Readtime";
 
 const columns: ColumnDef<Info>[] = [
   {
@@ -69,20 +70,44 @@ export default function Overview() {
 
   return (
     <>
-      <div className="grid grid-cols-4 gap-4">
+      <h2 className="mb-1 mt-12">Lezte Posts</h2>
+      <div className="mb-24 grid grid-cols-2 gap-8">
         {latest.data?.map((info) => (
           <Card key={info.id}>
-            <CardHeader>{info.title}</CardHeader>
-            <CardContent></CardContent>
+            <CardHeader>
+              <div className="flex justify-between">
+                <div>{info.title}</div>
+                <small className="text-foreground/60">
+                  Lesezeit: {calcReadtime(info.body)} min
+                </small>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="line-clamp-5">{info.body}</p>
+            </CardContent>
             <CardFooter>
-              <Link href={`/Info/${info.id}`}>Mehr</Link>
-              Erstellt: {info.created_at.toLocaleDateString("de-DE")}
-              Letztes Update: {info.updated_at?.toLocaleDateString("de-DE")}
+              <div className="flex w-full flex-row justify-between">
+                <Button asChild>
+                  <Link href={`/Info/${info.id}`}>Lesen</Link>
+                </Button>
+                <div className="flex flex-col">
+                  <small className="!m-0 !p-0 text-foreground/60">
+                    Erstellt: {info.created_at.toLocaleDateString("de-DE")}
+                  </small>
+                  {info.updated_at && (
+                    <small className="!m-0 !p-0 text-foreground/60">
+                      Letztes Update:{" "}
+                      {info.updated_at?.toLocaleDateString("de-DE")}
+                    </small>
+                  )}
+                </div>
+              </div>
             </CardFooter>
           </Card>
         ))}
       </div>
       {/* Table */}
+      <h2>Alle Posts</h2>
       {infos.data && <InfoDataTable columns={columns} data={infos.data} />}
     </>
   );

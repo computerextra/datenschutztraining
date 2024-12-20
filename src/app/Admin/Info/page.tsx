@@ -2,13 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { auth } from "@/server/auth";
-import { HydrateClient } from "@/trpc/server";
+import { api, HydrateClient } from "@/trpc/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Overview from "./_components/All";
 
 export default async function Info() {
   const session = await auth();
+  await api.info.getAll.prefetch();
 
   if (!session?.user.admin) redirect("/");
 
