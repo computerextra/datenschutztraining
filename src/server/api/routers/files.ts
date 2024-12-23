@@ -15,25 +15,6 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 const ACCEPTED_FILE_TYPES = ["application/pdf"];
 
-const imageSchema = z.instanceof(File).superRefine((f, ctx) => {
-  // First, add an issue if the mime type is wrong
-  if (!ACCEPTED_IMAGE_TYPES.includes(f.type)) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: `File must be one of ${ACCEPTED_IMAGE_TYPES.join(", ")} but was ${f.type}`,
-    });
-  }
-  if (f.size > MAX_FILE_SIZE) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.too_big,
-      type: "array",
-      message: `The file must not be larger than ${MAX_FILE_SIZE / 1000000} MB! but was ${f.size / 1000000} MB`,
-      maximum: MAX_FILE_SIZE,
-      inclusive: true,
-    });
-  }
-});
-
 const fileSchema = z.instanceof(File).superRefine((f, ctx) => {
   // First, add an issue if the mime type is wrong
   if (!ACCEPTED_FILE_TYPES.includes(f.type)) {
@@ -69,11 +50,12 @@ export const imageRouter = createTRPCRouter({
     const fileNames = await readdir(ImageFolder);
     const images: ImageResponse[] = [];
     fileNames.forEach((x, idx) => {
-      images.push({
-        id: idx.toString(),
-        name: x,
-        src: "/Upload/Images/" + x,
-      });
+      if (x != ".gitkeep")
+        images.push({
+          id: idx.toString(),
+          name: x,
+          src: "/Upload/Images/" + x,
+        });
     });
     return images;
   }),

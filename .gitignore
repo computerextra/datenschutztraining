@@ -21,6 +21,12 @@ next-env.d.ts
 # production
 /build
 
+# Uploaded Files
+/public/Upload/Files/*
+!/public/Upload/Files/.gitkeep
+/public/Upload/Images/*
+!/public/Upload/Images/.gitkeep
+
 # misc
 .DS_Store
 *.pem
