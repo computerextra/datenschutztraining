@@ -4,6 +4,7 @@ import { userRouter } from "./routers/user";
 import { infoRouter } from "./routers/info";
 import { fileRouter, imageRouter } from "./routers/files";
 import { AufgabenRouter } from "./routers/aufgabe";
+import { FragenRouter } from "./routers/fragen";
 
 /**
  * This is the primary router for your server.
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   image: imageRouter,
   file: fileRouter,
   aufgaben: AufgabenRouter,
+  fragen: FragenRouter,
 });
 
 // export type definition of API
