@@ -12,40 +12,38 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import type { FileResponse } from "@/server/api/routers/files";
+import { FilePenLine } from "lucide-react";
 
-function ImagePrev({ src, alt }: { src: string; alt: string }) {
+function FilePrev({ src }: { src: FileResponse }) {
   const [open, setOpen] = useState(false);
-  const deleteImage = api.image.delete.useMutation();
+  const deleteFile = api.file.delete.useMutation();
 
   const handleDelete = async () => {
-    await deleteImage.mutateAsync({ fileName: alt });
+    await deleteFile.mutateAsync({ fileName: src.name });
     location.reload();
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <img
-          src={src}
-          alt={alt}
-          className="aspect-video h-auto w-full max-w-[150px] rounded-xl object-contain"
-        />
+        <div className="flex justify-center">
+          <FilePenLine className="h-20 w-20" />
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[1500px]">
         <DialogTitle>
-          <p className="line-clamp-1">{alt}</p>
+          <p className="line-clamp-1">{src.name}</p>
         </DialogTitle>
-        <img
-          src={src}
-          alt={alt}
-          className="aspect-video h-auto w-full max-w-[1500px] rounded-xl object-contain"
+        <embed
+          src={src.src}
+          type="application/pdf"
+          className="h-[75vh] w-full"
         />
         <DialogFooter>
           <Button
             size={"sm"}
-            onClick={() =>
-              navigator.clipboard.writeText(`/Upload/Images/${alt}`)
-            }
+            onClick={() => navigator.clipboard.writeText(src.src)}
           >
             Copy Path
           </Button>
@@ -58,20 +56,20 @@ function ImagePrev({ src, alt }: { src: string; alt: string }) {
   );
 }
 
-export default function ImageBrowser() {
-  const images = api.image.getAll.useQuery();
+export default function Browser() {
+  const files = api.file.getAll.useQuery();
 
-  if (images.isLoading) return <>Loading</>;
-  if (images.isError) return <>Error</>;
+  if (files.isLoading) return <>Loading</>;
+  if (files.isError) return <>Error</>;
 
   return (
     <>
       <FileBrowser className="mt-12">
-        {images.data?.map((img) => (
+        {files.data?.map((file) => (
           <FileBrowserFile
-            key={img.id}
-            Content={<ImagePrev src={img.src} alt={img.name} />}
-            Title={img.name}
+            key={file.id}
+            Content={<FilePrev src={file} />}
+            Title={file.name}
           />
         ))}
       </FileBrowser>

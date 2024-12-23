@@ -8,7 +8,7 @@ import * as https from "node:https";
 
 // TODO: Hier alles einmal durchtesten
 
-type FileResponse = {
+export type FileResponse = {
   id: string;
   name: string;
   src: string;
