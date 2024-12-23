@@ -2,7 +2,7 @@
 
 import BackButton from "@/components/BackButton";
 import { api } from "@/trpc/react";
-import { MDXEditor } from "@mdxeditor/editor";
+import { imagePlugin, MDXEditor } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 
 export default function Read({ id }: { id: string }) {
@@ -21,7 +21,14 @@ export default function Read({ id }: { id: string }) {
         <MDXEditor
           contentEditableClassName="!text-foreground"
           readOnly
-          markdown={info.data?.body}
+          markdown={info.data.body}
+          plugins={[
+            imagePlugin({
+              imageUploadHandler: () => {
+                return Promise.resolve("https://picsum.photos/200/300");
+              },
+            }),
+          ]}
         />
       )}
     </>
