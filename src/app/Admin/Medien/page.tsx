@@ -1,16 +1,20 @@
-"use server";
+"use client";
 
-import { HydrateClient } from "@/trpc/server";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-export default async function Page() {
-  // Prefetch All Media
-
+export default function Page() {
   return (
-    <HydrateClient>
-      <>
-        <h1>Admin - Medien Verwaltung</h1>
-        <p>Hier werden Bilder und co. angezeigt.</p>
-      </>
-    </HydrateClient>
+    <>
+      <h1>Admin - Medien Verwaltung</h1>
+      <div className="mt-12 flex w-full justify-around">
+        <Button asChild className="px-12 py-6">
+          <Link href="/Admin/Medien/Bilder">Bilder</Link>
+        </Button>
+        <Button asChild className="px-12 py-6">
+          <Link href="/Admin/Medien/Dateien">Dateien</Link>
+        </Button>
+      </div>
+    </>
   );
 }

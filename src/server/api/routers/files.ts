@@ -2,13 +2,10 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import path from "path";
-import { mkdir, readdir, unlink, writeFile } from "fs/promises";
+import { readdir, unlink, writeFile } from "fs/promises";
 import { createWriteStream, existsSync } from "fs";
 import * as https from "node:https";
 
-const UploadFoler = path.join(__dirname, "Upload");
-const ImageFolder = path.join(UploadFoler, "Images");
-const FileFolder = path.join(UploadFoler, "Files");
 const MAX_FILE_SIZE = 1000000 * 100; // Number of byts in a megabyte
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -17,12 +14,6 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 const ACCEPTED_FILE_TYPES = ["application/pdf"];
-
-const folderCheck = async (path: string) => {
-  if (!existsSync(path)) {
-    await mkdir(path);
-  }
-};
 
 const imageSchema = z.instanceof(File).superRefine((f, ctx) => {
   // First, add an issue if the mime type is wrong
@@ -64,35 +55,55 @@ const fileSchema = z.instanceof(File).superRefine((f, ctx) => {
 
 // TODO: Hier alles einmal durchtesten
 
+type ImageResponse = {
+  id: string;
+  name: string;
+  src: string;
+};
+
 export const imageRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.session.user.admin) return null;
-    await folderCheck(UploadFoler);
-    await folderCheck(ImageFolder);
-    return await readdir(ImageFolder);
+    const UploadFoler = path.resolve("./public", "Upload");
+    const ImageFolder = path.join(UploadFoler, "Images");
+    const fileNames = await readdir(ImageFolder);
+    const images: ImageResponse[] = [];
+    fileNames.forEach((x, idx) => {
+      images.push({
+        id: idx.toString(),
+        name: x,
+        src: "/Upload/Images/" + x,
+      });
+    });
+    return images;
   }),
   create: protectedProcedure
     .input(
       z.object({
-        image: imageSchema,
+        image: z.string(),
+        name: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user.admin) return null;
-      await folderCheck(UploadFoler);
-      await folderCheck(ImageFolder);
-      const buf = await input.image.arrayBuffer();
-      await writeFile(
-        path.join(ImageFolder, input.image.name),
-        Buffer.from(buf),
-      );
+      console.log("Start Image Upload");
+      const UploadFoler = path.resolve("./public", "Upload");
+      const ImageFolder = path.join(UploadFoler, "Images");
+      console.log("Write File");
+
+      const data = input.image.replace(/^data:image\/\w+;base64,/, "");
+      const buf = new Buffer(data, "base64");
+      await writeFile(ImageFolder + "/" + input.name, buf);
+
+      // await writeFile(path.join(ImageFolder, input.name), buff);
+      return true;
     }),
   createFromUrl: protectedProcedure
     .input(z.object({ url: z.string(), fileName: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user.admin) return null;
-      await folderCheck(UploadFoler);
-      await folderCheck(ImageFolder);
+      const UploadFoler = path.resolve("./public", "Upload");
+      const ImageFolder = path.join(UploadFoler, "Images");
       const output = createWriteStream(path.join(ImageFolder, input.fileName));
       https
         .get(input.url, (res) => {
@@ -107,6 +118,8 @@ export const imageRouter = createTRPCRouter({
     .input(z.object({ fileName: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user.admin) return null;
+      const UploadFoler = path.resolve("./public", "Upload");
+      const ImageFolder = path.join(UploadFoler, "Images");
       if (existsSync(path.join(ImageFolder, input.fileName))) {
         await unlink(path.join(ImageFolder, input.fileName));
         return true;
@@ -119,8 +132,8 @@ export const imageRouter = createTRPCRouter({
 export const fileRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     if (!ctx.session.user.admin) return null;
-    await folderCheck(UploadFoler);
-    await folderCheck(FileFolder);
+    const UploadFoler = path.resolve("./public", "Upload");
+    const FileFolder = path.join(UploadFoler, "Files");
     return await readdir(FileFolder);
   }),
   create: protectedProcedure
@@ -131,18 +144,17 @@ export const fileRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user.admin) return null;
-      await folderCheck(UploadFoler);
-      await folderCheck(FileFolder);
       const buf = await input.file.arrayBuffer();
-      await writeFile(
-        path.join(ImageFolder, input.file.name),
-        Buffer.from(buf),
-      );
+      const UploadFoler = path.resolve("./public", "Upload");
+      const FileFolder = path.join(UploadFoler, "Files");
+      await writeFile(path.join(FileFolder, input.file.name), Buffer.from(buf));
     }),
   delete: protectedProcedure
     .input(z.object({ fileName: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user.admin) return null;
+      const UploadFoler = path.resolve("./public", "Upload");
+      const FileFolder = path.join(UploadFoler, "Files");
       if (existsSync(path.join(FileFolder, input.fileName))) {
         await unlink(path.join(FileFolder, input.fileName));
         return true;
