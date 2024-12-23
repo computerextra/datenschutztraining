@@ -43,14 +43,15 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String          @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?         @unique
   emailVerified DateTime?
   image         String?
-  admin         Boolean   @default(false)
+  admin         Boolean         @default(false)
   accounts      Account[]
   sessions      Session[]
+  Aufgaben      AufgabeOnUser[]
 }
 
 model VerificationToken {
@@ -67,4 +68,52 @@ model Info {
   body       String    @db.Text
   created_at DateTime  @default(now()) @db.DateTime(0)
   updated_at DateTime? @db.DateTime(0)
+}
+
+model Aufgabe {
+  id           String          @id @default(cuid())
+  title        String
+  body         String          @db.Text
+  created_at   DateTime        @default(now()) @db.DateTime(0)
+  updated_at   DateTime?       @db.DateTime(0)
+  questions    Question[]
+  completed_by AufgabeOnUser[]
+}
+
+model AufgabeOnUser {
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  Aufgabe    Aufgabe  @relation(fields: [aufgabeId], references: [id], onDelete: Cascade)
+  aufgabeId  String
+  created_at DateTime @default(now()) @db.DateTime(0)
+
+  @@id([userId, aufgabeId])
+}
+
+model Question {
+  id          String     @id @default(cuid())
+  title       String
+  question    String
+  answer_type AnswerType
+  anwers      Answer[]
+  created_at  DateTime   @default(now()) @db.DateTime(0)
+  updated_at  DateTime?  @db.DateTime(0)
+  Aufgabe     Aufgabe?   @relation(fields: [aufgabeId], references: [id], onDelete: Cascade)
+  aufgabeId   String?
+}
+
+model Answer {
+  id         String    @id @default(cuid())
+  title      String
+  correct    Boolean   @default(false)
+  Question   Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String?
+  created_at DateTime  @default(now()) @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+}
+
+enum AnswerType {
+  FREE
+  MULTI
+  ONE
 }
