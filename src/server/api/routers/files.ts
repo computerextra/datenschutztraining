@@ -6,37 +6,9 @@ import { readdir, unlink, writeFile } from "fs/promises";
 import { createWriteStream, existsSync } from "fs";
 import * as https from "node:https";
 
-const MAX_FILE_SIZE = 1000000 * 100; // Number of byts in a megabyte
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
-const ACCEPTED_FILE_TYPES = ["application/pdf"];
-
-const fileSchema = z.instanceof(File).superRefine((f, ctx) => {
-  // First, add an issue if the mime type is wrong
-  if (!ACCEPTED_FILE_TYPES.includes(f.type)) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: `File must be one of ${ACCEPTED_FILE_TYPES.join(", ")} but was ${f.type}`,
-    });
-  }
-  if (f.size > MAX_FILE_SIZE) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.too_big,
-      type: "array",
-      message: `The file must not be larger than ${MAX_FILE_SIZE / 1000000} MB! but was ${f.size / 1000000} MB`,
-      maximum: MAX_FILE_SIZE,
-      inclusive: true,
-    });
-  }
-});
-
 // TODO: Hier alles einmal durchtesten
 
-type ImageResponse = {
+type FileResponse = {
   id: string;
   name: string;
   src: string;
@@ -48,7 +20,7 @@ export const imageRouter = createTRPCRouter({
     const UploadFoler = path.resolve("./public", "Upload");
     const ImageFolder = path.join(UploadFoler, "Images");
     const fileNames = await readdir(ImageFolder);
-    const images: ImageResponse[] = [];
+    const images: FileResponse[] = [];
     fileNames.forEach((x, idx) => {
       if (x != ".gitkeep")
         images.push({
@@ -68,10 +40,9 @@ export const imageRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user.admin) return null;
-      console.log("Start Image Upload");
+
       const UploadFoler = path.resolve("./public", "Upload");
       const ImageFolder = path.join(UploadFoler, "Images");
-      console.log("Write File");
 
       const data = input.image.replace(/^data:image\/\w+;base64,/, "");
       const buf = new Buffer(data, "base64");
@@ -116,20 +87,35 @@ export const fileRouter = createTRPCRouter({
     if (!ctx.session.user.admin) return null;
     const UploadFoler = path.resolve("./public", "Upload");
     const FileFolder = path.join(UploadFoler, "Files");
-    return await readdir(FileFolder);
+    const fileNames = await readdir(FileFolder);
+    const images: FileResponse[] = [];
+    fileNames.forEach((x, idx) => {
+      if (x != ".gitkeep")
+        images.push({
+          id: idx.toString(),
+          name: x,
+          src: "/Upload/Files/" + x,
+        });
+    });
+    return images;
   }),
   create: protectedProcedure
     .input(
       z.object({
-        file: fileSchema,
+        file: z.string(),
+        name: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user.admin) return null;
-      const buf = await input.file.arrayBuffer();
+
       const UploadFoler = path.resolve("./public", "Upload");
       const FileFolder = path.join(UploadFoler, "Files");
-      await writeFile(path.join(FileFolder, input.file.name), Buffer.from(buf));
+      // TODO: TEST!
+      const data = input.file.replace(/^data:application\/\w+;base64,/, "");
+      const buf = new Buffer(data, "base64");
+      await writeFile(FileFolder + "/" + input.name, buf);
+      return true;
     }),
   delete: protectedProcedure
     .input(z.object({ fileName: z.string() }))
