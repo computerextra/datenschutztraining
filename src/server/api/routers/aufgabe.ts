@@ -30,7 +30,11 @@ export const AufgabenRouter = createTRPCRouter({
           id: input.id,
         },
         include: {
-          questions: true,
+          questions: {
+            include: {
+              anwers: true,
+            },
+          },
         },
       });
     }),

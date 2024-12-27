@@ -150,7 +150,7 @@ function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Keine Ergebisse.
+                  Keine Ergebnisse.
                 </TableCell>
               </TableRow>
             )}

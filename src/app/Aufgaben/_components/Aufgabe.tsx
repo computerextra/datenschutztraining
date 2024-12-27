@@ -15,19 +15,25 @@ import {
   tablePlugin,
   thematicBreakPlugin,
 } from "@mdxeditor/editor";
-import type { Question } from "@prisma/client";
+import type { Answer, Question } from "@prisma/client";
 import { useEffect, useState } from "react";
+import Frage from "./Frage";
 
 export default function Aufgabe({ id }: { id: string }) {
   const A = api.aufgaben.get.useQuery({ id });
   const Done = api.aufgaben.markDone.useMutation();
   const [correct, setCorrect] = useState<number>(0);
-  const [fragen, setFragen] = useState<Question[] | undefined>(undefined);
+  const [fragen, setFragen] = useState<
+    (Question & { anwers: Answer[] | null })[] | undefined
+  >(undefined);
   const [current, setCurrent] = useState(0);
   const [started, setStarted] = useState(false);
   const [finished, setFinished] = useState(false);
   const [done, setDone] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState<Answer[] | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     if (A.data == null) return;
@@ -48,11 +54,17 @@ export default function Aufgabe({ id }: { id: string }) {
 
   const handleCheck = () => {
     if (fragen == null) return;
+    if (selectedAnswers == null) return;
 
-    // TODO: Check if answer is correct
+    let correct = false;
+    selectedAnswers.forEach((x) => {
+      if (x.correct) correct = true;
+      else correct = false;
+    });
 
-    // TODO: If Correct
-    setCorrect((prev) => (prev += 1));
+    if (correct) {
+      setCorrect((prev) => (prev += 1));
+    }
 
     // Go to next Question
     if (current < fragen?.length - 1) {
@@ -127,13 +139,22 @@ export default function Aufgabe({ id }: { id: string }) {
               </Button>
             </>
           )}
-          {started && !done && !finished && (
-            <>
-              Hier wird die Frage gezeigt
-              <Button onClick={handleCheck}>Antwort Absenden</Button>
-            </>
+          {started && !done && !finished && fragen && (
+            <div className="mx-20 my-6">
+              <p>
+                Frage {current + 1} von {fragen?.length}
+              </p>
+              <Frage
+                Answers={fragen[current]!.anwers}
+                Question={fragen[current]}
+                setSelectedAnswers={setSelectedAnswers}
+              />
+              <Button onClick={handleCheck} className="mt-3">
+                Antwort Absenden
+              </Button>
+            </div>
           )}
-          {finished && (
+          {finished && !done && (
             <>
               <h2 className="mt-4">
                 Du hast {correct} von {fragen?.length} Antworten richtig
