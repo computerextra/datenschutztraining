@@ -18,6 +18,23 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+  type ColumnDef,
+} from "@tanstack/react-table";
+import type { Aufgabe, AufgabeOnUser } from "@prisma/client";
+import Link from "next/link";
 
 const formSchema = z.object({
   name: z.string(),
@@ -27,6 +44,7 @@ const formSchema = z.object({
 export default function BenutzerBearbeiten({ id }: { id: string }) {
   const user = api.user.getAdmin.useQuery({ id });
   const update = api.user.updateAdmin.useMutation();
+  const Aufgaben = api.aufgaben.getByUser.useQuery({ id });
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,9 +65,9 @@ export default function BenutzerBearbeiten({ id }: { id: string }) {
   }, [user.data]);
 
   // TODO: Loading Page
-  if (user.isLoading) return <>Loading</>;
+  if (user.isLoading || Aufgaben.isLoading) return <>Loading</>;
   // TODO: Error Page
-  if (user.isError) return <>Error</>;
+  if (user.isError || Aufgaben.isError) return <>Error</>;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (user.data == null) return;
@@ -60,6 +78,43 @@ export default function BenutzerBearbeiten({ id }: { id: string }) {
     });
     if (res) router.push("/Admin/Benutzer");
   };
+
+  const columns: ColumnDef<
+    Aufgabe & { completed_by: AufgabeOnUser[] | null }
+  >[] = [
+    {
+      accessorKey: "title",
+      header: "Titel",
+    },
+    {
+      accessorKey: "created_at",
+      header: "Abgeschlossen am",
+      cell: ({ row }) => {
+        const x = row.original;
+        const y = x.completed_by?.find((z) => z.userId === id);
+        return (
+          <p className="line-clamp-1">{y?.created_at.toLocaleDateString()}</p>
+        );
+      },
+    },
+    {
+      accessorKey: "action",
+      header: "Löschen",
+      cell: ({ row }) => {
+        const x = row.original;
+        const comp = x.completed_by?.find((z) => z.userId === id);
+        return (
+          <Button asChild size="sm">
+            <Link
+              href={`/Admin/Zertifikate/Delete/${comp?.userId}/${comp?.aufgabeId}`}
+            >
+              Zertifikat Löschen
+            </Link>
+          </Button>
+        );
+      },
+    },
+  ];
 
   return (
     <>
@@ -104,6 +159,78 @@ export default function BenutzerBearbeiten({ id }: { id: string }) {
           <Button type="submit">Speichern</Button>
         </form>
       </Form>
+      {Aufgaben.data && <DataTable columns={columns} data={Aufgaben.data} />}
     </>
+  );
+}
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+}
+
+function DataTable<TData, TValue>({
+  columns,
+  data,
+}: DataTableProps<TData, TValue>) {
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+
+  return (
+    <div>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  Keine Ergebnisse.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
   );
 }
