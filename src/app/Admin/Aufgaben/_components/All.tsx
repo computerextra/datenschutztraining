@@ -1,5 +1,6 @@
 "use client";
 
+import ErrorPage from "@/components/ErrorPage";
 import LoadingPage from "@/components/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -90,8 +91,7 @@ export default function All() {
   const Aufgaben = api.aufgaben.getAll.useQuery();
 
   if (Aufgaben.isLoading) return <LoadingPage />;
-
-  if (Aufgaben.isError) return <ErrorPage Error={Frage.error.message} />;
+  if (Aufgaben.isError) return <ErrorPage Error={Aufgaben.error.message} />;
 
   return (
     <>

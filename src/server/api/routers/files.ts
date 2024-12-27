@@ -46,7 +46,6 @@ export const imageRouter = createTRPCRouter({
       const buf = new Buffer(data, "base64");
       await writeFile(ImageFolder + "/" + input.name, buf);
 
-      // await writeFile(path.join(ImageFolder, input.name), buff);
       return true;
     }),
   createFromUrl: protectedProcedure

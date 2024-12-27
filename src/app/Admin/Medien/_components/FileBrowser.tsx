@@ -1,17 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { api } from "@/trpc/react";
-import { useRouter } from "next/navigation";
+
 import React from "react";
 
 type FileBrowserProps = {
@@ -31,24 +22,6 @@ type FileBrowserFileProps = {
 };
 
 function FileBrowserFile(props: FileBrowserFileProps) {
-  // const deleteImage = api.image.delete.useMutation();
-  // const deleteFile = api.file.delete.useMutation();
-  // const router = useRouter();
-
-  // const handleDelete = async () => {
-  //   if (!props.file && !props.image) return;
-
-  //   if (props.file) {
-  //     await deleteFile.mutateAsync({ fileName: props.fileName });
-  //     router.push("/Admin/Medien/Dateien");
-  //   }
-
-  //   if (props.image) {
-  //     await deleteImage.mutateAsync({ fileName: props.fileName });
-  //     router.push("/Admin/Medien/Bilder");
-  //   }
-  // };
-
   return (
     <Card>
       <CardHeader>
