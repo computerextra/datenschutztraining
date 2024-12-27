@@ -2,7 +2,19 @@
 
 import BackButton from "@/components/BackButton";
 import { api } from "@/trpc/react";
-import { imagePlugin, MDXEditor } from "@mdxeditor/editor";
+import {
+  AdmonitionDirectiveDescriptor,
+  directivesPlugin,
+  headingsPlugin,
+  imagePlugin,
+  linkDialogPlugin,
+  listsPlugin,
+  markdownShortcutPlugin,
+  MDXEditor,
+  quotePlugin,
+  tablePlugin,
+  thematicBreakPlugin,
+} from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
 
 export default function Read({ id }: { id: string }) {
@@ -28,6 +40,16 @@ export default function Read({ id }: { id: string }) {
                 return Promise.resolve("https://picsum.photos/200/300");
               },
             }),
+            directivesPlugin({
+              directiveDescriptors: [AdmonitionDirectiveDescriptor],
+            }),
+            headingsPlugin(),
+            quotePlugin(),
+            listsPlugin(),
+            thematicBreakPlugin(),
+            linkDialogPlugin(),
+            tablePlugin(),
+            markdownShortcutPlugin(),
           ]}
         />
       )}
