@@ -34,7 +34,7 @@ const columns: ColumnDef<Aufgabe & { questions: Question[] | null }>[] = [
       const x = row.original;
       return (
         <Link
-          href={"/Admin/Aufgabe/" + x.id}
+          href={"/Admin/Aufgaben/" + x.id}
           className="text-primary underline"
         >
           {x.id}
@@ -61,6 +61,26 @@ const columns: ColumnDef<Aufgabe & { questions: Question[] | null }>[] = [
       const x = row.original;
       const y = x.questions?.length ?? 0;
       return <p>{y}</p>;
+    },
+  },
+  {
+    accessorKey: "created_at",
+    header: "Erstellt",
+    cell: ({ row }) => {
+      const x = row.original;
+      return (
+        <p className="line-clamp-1">{x.created_at.toLocaleDateString()}</p>
+      );
+    },
+  },
+  {
+    accessorKey: "updated_at",
+    header: "Letztes Update",
+    cell: ({ row }) => {
+      const x = row.original;
+      return (
+        <p className="line-clamp-1">{x.updated_at?.toLocaleDateString()}</p>
+      );
     },
   },
 ];

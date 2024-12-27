@@ -21,6 +21,19 @@ export const AufgabenRouter = createTRPCRouter({
       },
     });
   }),
+  get: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      if (!ctx.session.user.admin) return null;
+      return await ctx.db.aufgabe.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          questions: true,
+        },
+      });
+    }),
   getByUser: protectedProcedure
     .input(z.object({ id: z.string().optional() }))
     .query(async ({ ctx, input }) => {
