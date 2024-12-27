@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingPage from "@/components/LoadingPage";
 import MarkdownEditor from "@/components/MarkDownEditor";
 import {
   MultiSelect,
@@ -77,11 +78,9 @@ export default function AufgabenForm({ id }: { id: string | undefined }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Aufgabe.data]);
 
-  if (Fragen.isLoading) return <>Loading</>;
-  if (Fragen.isError) return <>Error</>;
-  // TODO: Loading Page
-  if (Aufgabe.isLoading) return <>Loading</>;
+  if (Fragen.isLoading || Aufgabe.isLoading) return <LoadingPage />;
   // TODO: Error Page
+  if (Fragen.isError) return <>Error</>;
   if (Aufgabe.isError) return <>Error</>;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {

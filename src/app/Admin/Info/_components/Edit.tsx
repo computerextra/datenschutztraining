@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingPage from "@/components/LoadingPage";
 import MarkdownEditor from "@/components/MarkDownEditor";
 import { Button } from "@/components/ui/button";
 import {
@@ -62,8 +63,7 @@ export default function Edit({ id }: { id: string }) {
     router.push("/Admin/Info");
   };
 
-  // TODO: Loading Page
-  if (info.isLoading) return <>Loading</>;
+  if (info.isLoading) return <LoadingPage />;
   // TODO: Error Page
   if (info.isError) return <>Error</>;
 

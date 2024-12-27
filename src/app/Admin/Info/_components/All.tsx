@@ -14,6 +14,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import LoadingPage from "@/components/LoadingPage";
 
 const columns: ColumnDef<Info>[] = [
   {
@@ -90,8 +91,7 @@ const columns: ColumnDef<Info>[] = [
 export default function Overview() {
   const infos = api.info.getAll.useQuery();
 
-  //   TODO: Loading Page
-  if (infos.isLoading) return <>Loading</>;
+  if (infos.isLoading) return <LoadingPage />;
   //   TODO: Error Page
   if (infos.isError) return <>Error</>;
 

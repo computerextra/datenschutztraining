@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import LoadingPage from "@/components/LoadingPage";
 
 const columns: ColumnDef<Aufgabe & { questions: Question[] | null }>[] = [
   {
@@ -78,7 +79,8 @@ export default function Aufgaben({
 }) {
   const Aufgaben = api.aufgaben.getUndone.useQuery();
 
-  if (Aufgaben.isLoading) return <>Loading...</>;
+  if (Aufgaben.isLoading) return <LoadingPage />;
+  // TODO: Error Poge
   if (Aufgaben.isError) return <>Fehler</>;
 
   return (

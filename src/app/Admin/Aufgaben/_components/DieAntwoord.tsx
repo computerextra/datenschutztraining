@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingPage from "@/components/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -80,7 +81,8 @@ const columns: ColumnDef<Answer>[] = [
 export default function DieAntwoord() {
   const Aufgaben = api.antwort.getAll.useQuery();
 
-  if (Aufgaben.isLoading) return <>Loading</>;
+  if (Aufgaben.isLoading) return <LoadingPage />;
+  // TODO: Error Poge
   if (Aufgaben.isError) return <>Error</>;
 
   return (

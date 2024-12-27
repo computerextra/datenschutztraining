@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import LoadingPage from "@/components/LoadingPage";
 
 function ImagePrev({ src, alt }: { src: string; alt: string }) {
   const [open, setOpen] = useState(false);
@@ -61,7 +62,8 @@ function ImagePrev({ src, alt }: { src: string; alt: string }) {
 export default function ImageBrowser() {
   const images = api.image.getAll.useQuery();
 
-  if (images.isLoading) return <>Loading</>;
+  if (images.isLoading) return <LoadingPage />;
+  // TODO: Error Poge
   if (images.isError) return <>Error</>;
 
   return (

@@ -6,8 +6,6 @@ import { readdir, unlink, writeFile } from "fs/promises";
 import { createWriteStream, existsSync } from "fs";
 import * as https from "node:https";
 
-// TODO: Hier alles einmal durchtesten
-
 export type FileResponse = {
   id: string;
   name: string;
@@ -111,7 +109,7 @@ export const fileRouter = createTRPCRouter({
 
       const UploadFoler = path.resolve("./public", "Upload");
       const FileFolder = path.join(UploadFoler, "Files");
-      // TODO: TEST!
+
       const data = input.file.replace(/^data:application\/\w+;base64,/, "");
       const buf = new Buffer(data, "base64");
       await writeFile(FileFolder + "/" + input.name, buf);

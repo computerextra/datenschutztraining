@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingPage from "@/components/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import Link from "next/link";
@@ -19,8 +20,7 @@ export default function DeletePage({
   console.log("user", user);
   console.log("aufgabe", aufgabe);
 
-  //   TODO: Page: Loading
-  if (User.isLoading || Aufgabe.isLoading) return <>Loading</>;
+  if (User.isLoading || Aufgabe.isLoading) <LoadingPage />;
   //   TODO: Page: Error
   if (User.isError || Aufgabe.isError)
     return (

@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/table";
 import type { Aufgabe, AufgabeOnUser } from "@prisma/client";
 import Link from "next/link";
+import LoadingPage from "@/components/LoadingPage";
 
 export const metadata: Metadata = {
   title: "TRISTAN | Benuter",
@@ -66,8 +67,7 @@ export default function User({ userId }: { userId: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.data]);
 
-  //   TODO: Page: Loading
-  if (user.isLoading || Aufgaben.isLoading) return <>Loading</>;
+  if (user.isLoading || Aufgaben.isLoading) return <LoadingPage />;
   //   TODO: Page: Error
   if (user.isError || Aufgaben.isError) return <>Error</>;
 

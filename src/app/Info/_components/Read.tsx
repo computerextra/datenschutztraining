@@ -1,6 +1,7 @@
 "use client";
 
 import BackButton from "@/components/BackButton";
+import LoadingPage from "@/components/LoadingPage";
 import { api } from "@/trpc/react";
 import {
   AdmonitionDirectiveDescriptor,
@@ -20,8 +21,7 @@ import "@mdxeditor/editor/style.css";
 export default function Read({ id }: { id: string }) {
   const info = api.info.get.useQuery({ id });
 
-  // TODO: Loading Page
-  if (info.isLoading) return <>Loading</>;
+  if (info.isLoading) return <LoadingPage />;
   // TODO: Error Page
   if (info.isError) return <>Error</>;
 

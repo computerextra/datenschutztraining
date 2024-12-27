@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingPage from "@/components/LoadingPage";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -95,8 +96,7 @@ const columns: ColumnDef<User>[] = [
 export default function AdminUserOverview() {
   const user = api.user.getAll.useQuery();
 
-  //   TODO: Loading Page
-  if (user.isLoading) return <>Loading</>;
+  if (user.isLoading) return <LoadingPage />;
   //   TODO: Error Page
   if (user.isError) return <>Error</>;
 

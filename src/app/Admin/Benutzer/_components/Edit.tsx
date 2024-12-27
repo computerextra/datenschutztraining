@@ -35,6 +35,7 @@ import {
 } from "@tanstack/react-table";
 import type { Aufgabe, AufgabeOnUser } from "@prisma/client";
 import Link from "next/link";
+import LoadingPage from "@/components/LoadingPage";
 
 const formSchema = z.object({
   name: z.string(),
@@ -64,8 +65,7 @@ export default function BenutzerBearbeiten({ id }: { id: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.data]);
 
-  // TODO: Loading Page
-  if (user.isLoading || Aufgaben.isLoading) return <>Loading</>;
+  if (user.isLoading || Aufgaben.isLoading) return <LoadingPage />;
   // TODO: Error Page
   if (user.isError || Aufgaben.isError) return <>Error</>;
 

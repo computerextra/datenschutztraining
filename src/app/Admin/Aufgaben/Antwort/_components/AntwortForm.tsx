@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingPage from "@/components/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -46,8 +47,7 @@ export default function AntwortForm({ id }: { id: string | undefined }) {
     },
   });
 
-  // TODO: Loading Page
-  if (Antwort.isLoading) return <>Loading</>;
+  if (Antwort.isLoading) return <LoadingPage />;
   // TODO: Error Page
   if (Antwort.isError) return <>Error</>;
 

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { InfoDataTable } from "@/app/_components/InfoDataTable";
 import { calcReadtime } from "@/Helper/Readtime";
+import LoadingPage from "@/components/LoadingPage";
 
 const columns: ColumnDef<Info>[] = [
   {
@@ -63,8 +64,7 @@ export default function Overview() {
   const infos = api.info.getAll.useQuery();
   const latest = api.info.getLatest.useQuery();
 
-  //   TODO: Loading Page
-  if (infos.isLoading || latest.isLoading) return <>Loading</>;
+  if (infos.isLoading || latest.isLoading) return <LoadingPage />;
   //   TODO: Error Page
   if (infos.isError || latest.isError) return <>Error</>;
 
