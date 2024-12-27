@@ -107,10 +107,13 @@ export default function User({ userId }: { userId: string }) {
       header: "Zertifikat",
       cell: ({ row }) => {
         const x = row.original;
+        const comp = x.completed_by?.find((z) => z.userId === userId);
         return (
           <Button asChild size="sm">
-            {/* TODO: Link erstellen */}
-            <Link href="/">Zertifikat herunterladen</Link>
+            {/* TODO: Seite zu Link Erstellen */}
+            <Link href={`/Zertifikat/${comp?.userId}/${comp?.userId}`}>
+              Zertifikat herunterladen
+            </Link>
           </Button>
         );
       },
