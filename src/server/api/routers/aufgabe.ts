@@ -53,6 +53,11 @@ export const AufgabenRouter = createTRPCRouter({
             },
           },
         },
+        include: {
+          completed_by: {
+            orderBy: { created_at: "desc" },
+          },
+        },
       });
     }),
   getUndone: protectedProcedure.query(async ({ ctx }) => {

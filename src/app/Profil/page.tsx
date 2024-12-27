@@ -8,12 +8,13 @@ import User from "./_components/user";
 export default async function UserPage() {
   const session = await auth();
   await api.user.get.prefetch();
+  await api.aufgaben.getByUser.prefetch({ id: undefined });
 
   if (!session) redirect("/");
 
   return (
     <HydrateClient>
-      <User />
+      <User userId={session.user.id} />
     </HydrateClient>
   );
 }
