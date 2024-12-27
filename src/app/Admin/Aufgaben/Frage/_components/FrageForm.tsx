@@ -1,5 +1,6 @@
 "use client";
 
+import ErrorPage from "@/components/ErrorPage";
 import LoadingPage from "@/components/LoadingPage";
 import {
   MultiSelect,
@@ -87,9 +88,9 @@ export default function FrageForm({ id }: { id: string | undefined }) {
   });
 
   if (Frage.isLoading || Anworten.isLoading) return <LoadingPage />;
-  // TODO: Error Page
-  if (Frage.isError) return <>Error</>;
-  if (Anworten.isError) return <>Error</>;
+
+  if (Frage.isError) return <ErrorPage Error={Frage.error.message} />;
+  if (Anworten.isError) return <ErrorPage Error={Anworten.error.message} />;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (Frage.data == null) {

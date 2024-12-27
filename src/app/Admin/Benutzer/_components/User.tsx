@@ -1,5 +1,6 @@
 "use client";
 
+import ErrorPage from "@/components/ErrorPage";
 import LoadingPage from "@/components/LoadingPage";
 import { Button } from "@/components/ui/button";
 import {
@@ -97,8 +98,8 @@ export default function AdminUserOverview() {
   const user = api.user.getAll.useQuery();
 
   if (user.isLoading) return <LoadingPage />;
-  //   TODO: Error Page
-  if (user.isError) return <>Error</>;
+
+  if (user.isError) return <ErrorPage Error={user.error.message} />;
 
   return (
     <div className="container mx-auto py-10">

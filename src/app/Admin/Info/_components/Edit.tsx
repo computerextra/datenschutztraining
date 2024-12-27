@@ -1,5 +1,6 @@
 "use client";
 
+import ErrorPage from "@/components/ErrorPage";
 import LoadingPage from "@/components/LoadingPage";
 import MarkdownEditor from "@/components/MarkDownEditor";
 import { Button } from "@/components/ui/button";
@@ -64,8 +65,8 @@ export default function Edit({ id }: { id: string }) {
   };
 
   if (info.isLoading) return <LoadingPage />;
-  // TODO: Error Page
-  if (info.isError) return <>Error</>;
+
+  if (info.isError) return <ErrorPage Error={info.error.message} />;
 
   return (
     <>

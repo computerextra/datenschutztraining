@@ -36,6 +36,7 @@ import {
 import type { Aufgabe, AufgabeOnUser } from "@prisma/client";
 import Link from "next/link";
 import LoadingPage from "@/components/LoadingPage";
+import ErrorPage from "@/components/ErrorPage";
 
 const formSchema = z.object({
   name: z.string(),
@@ -66,8 +67,9 @@ export default function BenutzerBearbeiten({ id }: { id: string }) {
   }, [user.data]);
 
   if (user.isLoading || Aufgaben.isLoading) return <LoadingPage />;
-  // TODO: Error Page
-  if (user.isError || Aufgaben.isError) return <>Error</>;
+
+  if (user.isError) return <ErrorPage Error={user.error.message} />;
+  if (Aufgaben.isError) return <ErrorPage Error={Aufgaben.error.message} />;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (user.data == null) return;

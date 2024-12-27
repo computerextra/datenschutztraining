@@ -1,5 +1,6 @@
 "use client";
 
+import ErrorPage from "@/components/ErrorPage";
 import LoadingPage from "@/components/LoadingPage";
 import MarkdownEditor from "@/components/MarkDownEditor";
 import {
@@ -79,9 +80,9 @@ export default function AufgabenForm({ id }: { id: string | undefined }) {
   }, [Aufgabe.data]);
 
   if (Fragen.isLoading || Aufgabe.isLoading) return <LoadingPage />;
-  // TODO: Error Page
-  if (Fragen.isError) return <>Error</>;
-  if (Aufgabe.isError) return <>Error</>;
+
+  if (Fragen.isError) return <ErrorPage Error={Fragen.error.message} />;
+  if (Aufgabe.isError) return <ErrorPage Error={Aufgabe.error.message} />;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (Aufgabe.data == null) {

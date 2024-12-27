@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import LoadingPage from "@/components/LoadingPage";
+import ErrorPage from "@/components/ErrorPage";
 
 function ImagePrev({ src, alt }: { src: string; alt: string }) {
   const [open, setOpen] = useState(false);
@@ -63,8 +64,8 @@ export default function ImageBrowser() {
   const images = api.image.getAll.useQuery();
 
   if (images.isLoading) return <LoadingPage />;
-  // TODO: Error Poge
-  if (images.isError) return <>Error</>;
+
+  if (images.isError) return <ErrorPage Error={images.error.message} />;
 
   return (
     <>

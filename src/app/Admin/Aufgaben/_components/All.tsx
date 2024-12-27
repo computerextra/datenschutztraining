@@ -90,8 +90,8 @@ export default function All() {
   const Aufgaben = api.aufgaben.getAll.useQuery();
 
   if (Aufgaben.isLoading) return <LoadingPage />;
-  // TODO: Error Poge
-  if (Aufgaben.isError) return <>Error</>;
+
+  if (Aufgaben.isError) return <ErrorPage Error={Frage.error.message} />;
 
   return (
     <>

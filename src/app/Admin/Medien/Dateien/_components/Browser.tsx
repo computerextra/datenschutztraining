@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import type { FileResponse } from "@/server/api/routers/files";
 import { FilePenLine } from "lucide-react";
 import LoadingPage from "@/components/LoadingPage";
+import ErrorPage from "@/components/ErrorPage";
 
 function FilePrev({ src }: { src: FileResponse }) {
   const [open, setOpen] = useState(false);
@@ -61,8 +62,8 @@ export default function Browser() {
   const files = api.file.getAll.useQuery();
 
   if (files.isLoading) return <LoadingPage />;
-  // TODO: Error Poge
-  if (files.isError) return <>Error</>;
+
+  if (files.isError) return <ErrorPage Error={files.error.message} />;
 
   return (
     <>

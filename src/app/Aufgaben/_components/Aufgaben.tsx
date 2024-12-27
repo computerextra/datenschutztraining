@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import LoadingPage from "@/components/LoadingPage";
+import ErrorPage from "@/components/ErrorPage";
 
 const columns: ColumnDef<Aufgabe & { questions: Question[] | null }>[] = [
   {
@@ -80,8 +81,8 @@ export default function Aufgaben({
   const Aufgaben = api.aufgaben.getUndone.useQuery();
 
   if (Aufgaben.isLoading) return <LoadingPage />;
-  // TODO: Error Poge
-  if (Aufgaben.isError) return <>Fehler</>;
+
+  if (Aufgaben.isError) return <ErrorPage Error={Aufgaben.error.message} />;
 
   return (
     <>

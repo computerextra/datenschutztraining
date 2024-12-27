@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import LoadingPage from "@/components/LoadingPage";
+import ErrorPage from "@/components/ErrorPage";
 
 const columns: ColumnDef<Info>[] = [
   {
@@ -92,8 +93,8 @@ export default function Overview() {
   const infos = api.info.getAll.useQuery();
 
   if (infos.isLoading) return <LoadingPage />;
-  //   TODO: Error Page
-  if (infos.isError) return <>Error</>;
+
+  if (infos.isError) return <ErrorPage Error={infos.error.message} />;
 
   if (infos.data) return <InfoDataTable columns={columns} data={infos.data} />;
 }

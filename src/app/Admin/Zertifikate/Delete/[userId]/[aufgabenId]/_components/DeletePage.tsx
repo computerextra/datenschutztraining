@@ -1,5 +1,6 @@
 "use client";
 
+import ErrorPage from "@/components/ErrorPage";
 import LoadingPage from "@/components/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
@@ -21,14 +22,9 @@ export default function DeletePage({
   console.log("aufgabe", aufgabe);
 
   if (User.isLoading || Aufgabe.isLoading) <LoadingPage />;
-  //   TODO: Page: Error
-  if (User.isError || Aufgabe.isError)
-    return (
-      <>
-        {User.isError && <>User Fehler: {User.error.message}</>}
-        {Aufgabe.isError && <>Aufgabe Fehler: {Aufgabe.error.message}</>}
-      </>
-    );
+
+  if (User.isError) return <ErrorPage Error={User.error.message} />;
+  if (Aufgabe.isError) return <ErrorPage Error={Aufgabe.error.message} />;
 
   const handleConfirm = async () => {
     await Delete.mutateAsync({

@@ -19,6 +19,7 @@ import type { Answer, Question } from "@prisma/client";
 import { useEffect, useState } from "react";
 import Frage from "./Frage";
 import LoadingPage from "@/components/LoadingPage";
+import ErrorPage from "@/components/ErrorPage";
 
 export default function Aufgabe({ id }: { id: string }) {
   const A = api.aufgaben.get.useQuery({ id });
@@ -51,8 +52,8 @@ export default function Aufgabe({ id }: { id: string }) {
   }, [A.data]);
 
   if (A.isLoading) return <LoadingPage />;
-  // TODO: Error Poge
-  if (A.isError) return <>Fehler</>;
+
+  if (A.isError) return <ErrorPage Error={A.error.message} />;
 
   const handleCheck = () => {
     if (fragen == null) return;

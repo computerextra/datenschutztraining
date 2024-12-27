@@ -1,6 +1,7 @@
 "use client";
 
 import BackButton from "@/components/BackButton";
+import ErrorPage from "@/components/ErrorPage";
 import LoadingPage from "@/components/LoadingPage";
 import { api } from "@/trpc/react";
 import {
@@ -22,8 +23,7 @@ export default function Read({ id }: { id: string }) {
   const info = api.info.get.useQuery({ id });
 
   if (info.isLoading) return <LoadingPage />;
-  // TODO: Error Page
-  if (info.isError) return <>Error</>;
+  if (info.isError) return <ErrorPage Error={info.error.message} />;
 
   return (
     <>

@@ -1,5 +1,6 @@
 "use client";
 
+import ErrorPage from "@/components/ErrorPage";
 import LoadingPage from "@/components/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -48,8 +49,8 @@ export default function AntwortForm({ id }: { id: string | undefined }) {
   });
 
   if (Antwort.isLoading) return <LoadingPage />;
-  // TODO: Error Page
-  if (Antwort.isError) return <>Error</>;
+
+  if (Antwort.isError) return <ErrorPage Error={Antwort.error.message} />;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (Antwort.data == null) {

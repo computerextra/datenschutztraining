@@ -36,6 +36,7 @@ import {
 import type { Aufgabe, AufgabeOnUser } from "@prisma/client";
 import Link from "next/link";
 import LoadingPage from "@/components/LoadingPage";
+import ErrorPage from "@/components/ErrorPage";
 
 export const metadata: Metadata = {
   title: "TRISTAN | Benuter",
@@ -68,8 +69,9 @@ export default function User({ userId }: { userId: string }) {
   }, [user.data]);
 
   if (user.isLoading || Aufgaben.isLoading) return <LoadingPage />;
-  //   TODO: Page: Error
-  if (user.isError || Aufgaben.isError) return <>Error</>;
+
+  if (Aufgaben.isError) return <ErrorPage Error={Aufgaben.error.message} />;
+  if (user.isError) return <ErrorPage Error={user.error.message} />;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const res = await updater.mutateAsync({ name: values.name });
