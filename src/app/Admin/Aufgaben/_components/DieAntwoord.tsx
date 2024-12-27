@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { api } from "@/trpc/react";
-import type { Aufgabe, Question } from "@prisma/client";
+import type { Answer } from "@prisma/client";
 import {
   type ColumnFiltersState,
   flexRender,
@@ -26,7 +26,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 
-const columns: ColumnDef<Aufgabe & { questions: Question[] | null }>[] = [
+const columns: ColumnDef<Answer>[] = [
   {
     accessorKey: "id",
     header: "ID",
@@ -34,7 +34,7 @@ const columns: ColumnDef<Aufgabe & { questions: Question[] | null }>[] = [
       const x = row.original;
       return (
         <Link
-          href={"/Admin/Aufgabe/" + x.id}
+          href={"/Admin/Aufgaben/Antwort/" + x.id}
           className="text-primary underline"
         >
           {x.id}
@@ -47,44 +47,45 @@ const columns: ColumnDef<Aufgabe & { questions: Question[] | null }>[] = [
     header: "Titel",
   },
   {
-    accessorKey: "body",
-    header: "Text",
+    accessorKey: "correct",
+    header: "Richtig",
+  },
+  {
+    accessorKey: "questionId",
+    header: "Frage ID",
     cell: ({ row }) => {
       const x = row.original;
-      return <p className="line-clamp-1">{x.body}</p>;
+      return <Link href={"/Admin/Aufgaben/" + x.id}>{x.id}</Link>;
+    },
+  },
+
+  {
+    accessorKey: "created_at",
+    header: "Erstellt",
+    cell: ({ row }) => {
+      const x = row.original;
+      return <p>{x.created_at.toLocaleDateString()}</p>;
     },
   },
   {
-    id: "aufgaben",
-    header: "Anzahl Fragen",
+    id: "updated_at",
+    header: "Letztes Update",
     cell: ({ row }) => {
       const x = row.original;
-      const y = x.questions?.length ?? 0;
-      return <p>{y}</p>;
+      return <p>{x.updated_at?.toLocaleDateString()}</p>;
     },
   },
 ];
 
-export default function All() {
-  const Aufgaben = api.aufgaben.getAll.useQuery();
+export default function DieAntwoord() {
+  const Aufgaben = api.antwort.getAll.useQuery();
 
   if (Aufgaben.isLoading) return <>Loading</>;
   if (Aufgaben.isError) return <>Error</>;
 
   return (
     <>
-      <div className="mt-8 flex justify-around">
-        <Button asChild className="mb-8">
-          <Link href="/Admin/Aufgaben/Neu">Neue Aufgabe erstellen</Link>
-        </Button>
-        <Button asChild className="mb-8">
-          <Link href="/Admin/Aufgaben/Frage/Neu">Neue Frage erstellen</Link>
-        </Button>
-        <Button asChild className="mb-8">
-          <Link href="/Admin/Aufgaben/Antwort/Neu">Neue Antwort erstellen</Link>
-        </Button>
-      </div>
-      <h2>Alle Aufgaben</h2>
+      <h2>Alle Antworten</h2>
       {Aufgaben.data && <DataTable columns={columns} data={Aufgaben.data} />}
     </>
   );

@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { api } from "@/trpc/react";
-import type { Aufgabe, Question } from "@prisma/client";
+import type { Answer, Question } from "@prisma/client";
 import {
   type ColumnFiltersState,
   flexRender,
@@ -26,7 +26,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 
-const columns: ColumnDef<Aufgabe & { questions: Question[] | null }>[] = [
+const columns: ColumnDef<Question & { anwers: Answer[] }>[] = [
   {
     accessorKey: "id",
     header: "ID",
@@ -34,7 +34,7 @@ const columns: ColumnDef<Aufgabe & { questions: Question[] | null }>[] = [
       const x = row.original;
       return (
         <Link
-          href={"/Admin/Aufgabe/" + x.id}
+          href={"/Admin/Aufgaben/Frage/" + x.id}
           className="text-primary underline"
         >
           {x.id}
@@ -46,45 +46,51 @@ const columns: ColumnDef<Aufgabe & { questions: Question[] | null }>[] = [
     accessorKey: "title",
     header: "Titel",
   },
+
   {
-    accessorKey: "body",
-    header: "Text",
+    accessorKey: "answer_type",
+    header: "Aufgaben Typ",
+  },
+  {
+    id: "anwtorten",
+    header: "Anzahl Antworten",
     cell: ({ row }) => {
       const x = row.original;
-      return <p className="line-clamp-1">{x.body}</p>;
+      const y = x.anwers?.length;
+      return <p>{y}</p>;
     },
   },
   {
-    id: "aufgaben",
-    header: "Anzahl Fragen",
+    accessorKey: "created_at",
+    header: "Erstellt",
     cell: ({ row }) => {
       const x = row.original;
-      const y = x.questions?.length ?? 0;
-      return <p>{y}</p>;
+      return (
+        <p className="line-clamp-1">{x.created_at.toLocaleDateString()}</p>
+      );
+    },
+  },
+  {
+    accessorKey: "updated_at",
+    header: "Letztes Update",
+    cell: ({ row }) => {
+      const x = row.original;
+      return (
+        <p className="line-clamp-1">{x.updated_at?.toLocaleDateString()}</p>
+      );
     },
   },
 ];
 
-export default function All() {
-  const Aufgaben = api.aufgaben.getAll.useQuery();
+export default function AlleFragen() {
+  const Aufgaben = api.fragen.getAll.useQuery();
 
   if (Aufgaben.isLoading) return <>Loading</>;
   if (Aufgaben.isError) return <>Error</>;
 
   return (
     <>
-      <div className="mt-8 flex justify-around">
-        <Button asChild className="mb-8">
-          <Link href="/Admin/Aufgaben/Neu">Neue Aufgabe erstellen</Link>
-        </Button>
-        <Button asChild className="mb-8">
-          <Link href="/Admin/Aufgaben/Frage/Neu">Neue Frage erstellen</Link>
-        </Button>
-        <Button asChild className="mb-8">
-          <Link href="/Admin/Aufgaben/Antwort/Neu">Neue Antwort erstellen</Link>
-        </Button>
-      </div>
-      <h2>Alle Aufgaben</h2>
+      <h2>Alle Fragen</h2>
       {Aufgaben.data && <DataTable columns={columns} data={Aufgaben.data} />}
     </>
   );

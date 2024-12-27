@@ -2,35 +2,29 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
-export const FragenRouter = createTRPCRouter({
+export const AnwortenRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.db.question.findMany({
+    return await ctx.db.answer.findMany({
       orderBy: {
         created_at: "desc",
       },
-      include: {
-        anwers: true,
-      },
     });
   }),
-  get: protectedProcedure
+  getAllFromQuestion: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return await ctx.db.question.findUnique({
+      return await ctx.db.answer.findMany({
         where: {
-          id: input.id,
-        },
-        include: {
-          anwers: true,
+          questionId: input.id,
         },
       });
     }),
-  getAllFromAufgabe: protectedProcedure
+  get: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      return await ctx.db.question.findMany({
+      return await ctx.db.answer.findUnique({
         where: {
-          aufgabeId: input.id,
+          id: input.id,
         },
       });
     }),
@@ -38,23 +32,17 @@ export const FragenRouter = createTRPCRouter({
     .input(
       z.object({
         title: z.string(),
-        question: z.string(),
-        antworten: z.array(z.string()),
-        type: z.enum(["FREE", "MULTI", "ONE"]),
+        correct: z.boolean(),
+        questionId: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user.admin) return null;
-      return await ctx.db.question.create({
+      return await ctx.db.answer.create({
         data: {
           title: input.title,
-          question: input.question,
-          answer_type: input.type,
-          anwers: {
-            connect: input.antworten.map((x) => ({
-              id: x,
-            })),
-          },
+          correct: input.correct,
+          questionId: input.questionId,
         },
       });
     }),
@@ -63,26 +51,20 @@ export const FragenRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         title: z.string(),
-        question: z.string(),
-        antworten: z.array(z.string()),
-        type: z.enum(["FREE", "MULTI", "ONE"]),
+        correct: z.boolean(),
+        questionId: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user.admin) return null;
 
-      return await ctx.db.question.update({
+      return await ctx.db.answer.update({
         where: { id: input.id },
         data: {
           title: input.title,
-          question: input.question,
-          answer_type: input.type,
+          correct: input.correct,
+          questionId: input.questionId,
           updated_at: new Date(),
-          anwers: {
-            set: input.antworten.map((x) => ({
-              id: x,
-            })),
-          },
         },
       });
     }),
@@ -90,7 +72,7 @@ export const FragenRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       if (!ctx.session.user.admin) return null;
-      return await ctx.db.question.delete({
+      return await ctx.db.answer.delete({
         where: {
           id: input.id,
         },
