@@ -53,10 +53,13 @@ export const AufgabenRouter = createTRPCRouter({
     }),
   getUndone: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.db.aufgabe.findMany({
+      include: {
+        questions: true,
+      },
       where: {
         NOT: {
           completed_by: {
-            every: {
+            some: {
               userId: ctx.session.user.id,
             },
           },
